@@ -1,8 +1,9 @@
 import { SlCompass } from "react-icons/sl";
 import { BiSolidUserCircle } from "react-icons/bi"
 
-const NavBar = () => {
 
+const NavBar = () => {
+    
     let Links=[
         {name: "HOME", link:"/"},
         {name: "UPCOMING", link:"/upcoming-trips"},
@@ -33,7 +34,9 @@ const NavBar = () => {
             </div>
             
             <div className="flex justify-end w-1/6 ">
-                <button type="button" className=" h-full px-2 text-gray-600 hover:text-gray-700 rounded-r-md hover:bg-gray-50 mr-4">
+                <button
+                className=" h-full px-2 text-gray-600 hover:text-gray-700 rounded-r-md hover:bg-gray-50 mr-4"
+                type="button">
                     <BiSolidUserCircle size={35} />
                 </button>
             </div>
