@@ -1,15 +1,10 @@
 import { SlCompass } from "react-icons/sl";
 import { BiSolidUserCircle } from "react-icons/bi"
+import { Outlet, Link } from "react-router-dom";
 
 
 const NavBar = () => {
     
-    let Links=[
-        {name: "HOME", link:"/"},
-        {name: "UPCOMING", link:"/upcoming-trips"},
-        {name: "TRAVEL LOG", link:"/history"},
-    ]
-
     return (
         <div className=" w-full fixed top-0 left-0 flex-row">
             <div className="md: flex bg-transparent py-4 md:px-10 px-7 ">
@@ -23,13 +18,15 @@ const NavBar = () => {
                     </div>           
 
                     <ul className="md:flex md:items-center">
-                    {
-                        Links.map((link)=> (
-                            <li key={link.name} className="md:ml-6 text-l">
-                                <a href={link.link} className='hover:text-gray-400 duration-300'>{link.name}</a>
-                            </li>
-                        ))
-                    }
+                        <li  className="md:ml-6 text-l">
+                            <Link to={`/home`} className='hover:text-gray-400 duration-300'>HOME</Link>
+                        </li>
+                        <li className="md:ml-6 text-l">
+                            <Link to={`/upcoming`} className='hover:text-gray-400 duration-300'>UPCOMING</Link>
+                        </li>
+                        <li className="md:ml-6 text-l">
+                            <Link to={`/history`} className='hover:text-gray-400 duration-300'>HISTORY</Link>
+                        </li>
                     </ul>
             </div>
             
