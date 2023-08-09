@@ -1,6 +1,6 @@
 import { SlCompass } from "react-icons/sl";
 import { BiSolidUserCircle } from "react-icons/bi"
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 const NavBar = () => {
@@ -19,20 +19,20 @@ const NavBar = () => {
 
                     <ul className="md:flex md:items-center">
                         <li  className="md:ml-6 text-l">
-                            <Link to={`/home`} className='hover:text-gray-400 duration-300'>HOME</Link>
+                            <Link to={`/home`} className='hover:text-white duration-300'>HOME</Link>
                         </li>
                         <li className="md:ml-6 text-l">
-                            <Link to={`/upcoming`} className='hover:text-gray-400 duration-300'>UPCOMING</Link>
+                            <Link to={`/upcoming`} className='hover:text-white duration-300'>UPCOMING</Link>
                         </li>
                         <li className="md:ml-6 text-l">
-                            <Link to={`/history`} className='hover:text-gray-400 duration-300'>HISTORY</Link>
+                            <Link to={`/history`} className='hover:text-white duration-300'>HISTORY</Link>
                         </li>
                     </ul>
             </div>
             
             <div className="flex justify-end w-1/6 ">
                 <button
-                className=" h-full px-2 text-gray-600 hover:text-gray-700 rounded-r-md hover:bg-gray-50 mr-4"
+                className=" h-full px-2 text-white hover:text-grey rounded-full hover:bg-gray mr-1"
                 type="button">
                     <BiSolidUserCircle size={35} />
                 </button>
