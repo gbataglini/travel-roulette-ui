@@ -6,7 +6,7 @@ export default function Upcoming() {
   const [destinations, setDestinations] = useState([]);
 
   const fetchDestinationData = () => {
-    fetch(`http://localhost:5001//api/v1/destinations`)
+    fetch(`http://localhost:5001/api/v1/destinations`)
       .then((response) => {
         return response.json();
       })
@@ -14,6 +14,14 @@ export default function Upcoming() {
         setDestinations(data);
       });
   };
+
+const handleDelete = (id) => {
+    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
+    method: 'DELETE'
+    })
+    .catch(error => console.error(error));
+  }
+
 
   useEffect(() => {
     fetchDestinationData();
@@ -52,7 +60,7 @@ export default function Upcoming() {
             </div>
             <div className="py-2 flex justify-center">
               <button
-                className="bg-white hover:bg-black hover:text-white rounded-lg p-4 ml-3"
+                className="bg-white hover:bg-gray-700 hover:text-white rounded-lg p-4 ml-3"
                 onClick={handleClick}
               >
                 Pick for me
@@ -62,20 +70,28 @@ export default function Upcoming() {
         </div>
       </div>
 
-      <div>
-        <p className="text-3xl font-bold text-black py-4">All Destinations</p>
+      <div className="m-10">
+        <p className="text-3xl font-bold text-black py-1">All Destinations</p>
       </div>
 
-      <div>
-        {destinations.length > 0 && (
-          <ul>
-            {destinations.map((destination) => (
-              <li key={destination.destinationID}>
-                {destination.destinationName}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="grid grid-cols-3 p-10 m-2">
+        {destinations.map((data, id) => {
+          return (
+            <div key={id}>
+              <p className="text-xl p-3">{data.destinationName}</p>
+              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base">
+                Mark as Visited
+              </button>
+              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base mb-10"
+              onClick={() => {
+                handleDelete(data.destinationID)
+              }}
+              >
+                Delete
+              </button>
+            </div>
+          );
+        })}
       </div>
     </>
   );
