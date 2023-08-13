@@ -28,6 +28,7 @@ export default function Home() {
       console.log(err);
     }
   };
+
   return (
     <>
       <div
@@ -41,7 +42,7 @@ export default function Home() {
             </div>
 
             <div className="py-8 flex justify-center">
-              <p className="text-7xl font-bold italic text-black">WHERE TO?</p>
+              <p className="text-7xl font-bold italic text-white">WHERE TO?</p>
             </div>
 
             <div className="flex justify-center">
