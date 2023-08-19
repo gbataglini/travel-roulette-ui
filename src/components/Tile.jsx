@@ -24,4 +24,4 @@ const Tile = (props) => {
   )
 }
 
-export default DestinationTile
+export default Tile
