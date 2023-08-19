@@ -1,5 +1,6 @@
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
+import Tile from "../components/Tile";
 
 export default function Upcoming() {
   const [randomDestination, setRandomDestination] = useState(null);
@@ -15,17 +16,12 @@ export default function Upcoming() {
       });
   };
 
-const handleDelete = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-    method: 'DELETE'
-    })
-    .catch(error => console.error(error));
-  }
-
-
   useEffect(() => {
     fetchDestinationData();
   }, []);
+
+  useEffect(() => {}, [destinations])
+
 
   const handleClick = async () => {
     try {
@@ -40,6 +36,18 @@ const handleDelete = (id) => {
       console.log(err.message);
     }
   };
+  
+  const handleDelete = (id) => {
+    console.log(id + 'id')
+    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
+    method: 'DELETE'
+    })
+    .then(() => {
+      fetchDestinationData();
+    })
+    .catch(error => console.error(error));
+    
+  }
 
   return (
     <>
@@ -74,24 +82,9 @@ const handleDelete = (id) => {
         <p className="text-3xl font-bold text-black py-1">All Destinations</p>
       </div>
 
-      <div className="grid grid-cols-3 p-10 m-2">
-        {destinations.map((data, id) => {
-          return (
-            <div key={id}>
-              <p className="text-xl p-3">{data.destinationName}</p>
-              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base">
-                Mark as Visited
-              </button>
-              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base mb-10"
-              onClick={() => {
-                handleDelete(data.destinationID)
-              }}
-              >
-                Delete
-              </button>
-            </div>
-          );
-        })}
+      <div className="grid grid-cols-3 gap-4">
+        {destinations.map(data => (<Tile key={data.destinationID} id = {data.destinationID} name={data.destinationName} item={data} onClick = {handleDelete} />))
+        }
       </div>
     </>
   );
