@@ -1,13 +1,18 @@
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Tile from "../components/Tile";
+import WhiteButton from "../components/WhiteButton";
 
 export default function Upcoming() {
   const [randomDestination, setRandomDestination] = useState(null);
   const [destinations, setDestinations] = useState([]);
 
   const fetchDestinationData = () => {
-    fetch(`http://localhost:5001/api/v1/destinations`)
+    fetch(
+      `http://localhost:5001/api/v1/destinations?status=${encodeURIComponent(
+        "not visited"
+      )}`
+    )
       .then((response) => {
         return response.json();
       })
@@ -20,8 +25,7 @@ export default function Upcoming() {
     fetchDestinationData();
   }, []);
 
-  useEffect(() => {}, [destinations])
-
+  useEffect(() => {}, [destinations]);
 
   const handleClick = async () => {
     try {
@@ -36,18 +40,34 @@ export default function Upcoming() {
       console.log(err.message);
     }
   };
-  
+
   const handleDelete = (id) => {
-    console.log(id + 'id')
     fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-    method: 'DELETE'
+      method: "DELETE",
     })
-    .then(() => {
-      fetchDestinationData();
+      .then(() => {
+        fetchDestinationData();
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const handleSetVisited = (id) => {
+    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+
+      body: JSON.stringify({
+        status: "visited",
+      }),
     })
-    .catch(error => console.error(error));
-    
-  }
+      .then(() => {
+        fetchDestinationData();
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <>
@@ -67,12 +87,7 @@ export default function Upcoming() {
               </p>
             </div>
             <div className="py-2 flex justify-center">
-              <button
-                className="bg-white hover:bg-gray-700 hover:text-white rounded-lg p-4 ml-3"
-                onClick={handleClick}
-              >
-                Pick for me
-              </button>
+              <WhiteButton text="Pick for me" onClick={handleClick} />
             </div>
           </div>
         </div>
@@ -83,8 +98,19 @@ export default function Upcoming() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {destinations.map(data => (<Tile key={data.destinationID} id = {data.destinationID} name={data.destinationName} item={data} onClick = {handleDelete} />))
-        }
+        {destinations.map((data) => (
+          <Tile
+            key={data.destinationID}
+            id={data.destinationID}
+            name={data.destinationName}
+            item={data}
+            firstAction={{
+              text: "Mark as Visited",
+              onClick: handleSetVisited,
+            }}
+            secondAction={{ text: "Delete", onClick: handleDelete }}
+          />
+        ))}
       </div>
     </>
   );
