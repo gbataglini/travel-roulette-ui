@@ -1,57 +1,23 @@
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Tile from "../components/Tile";
+import { upcomingActions } from "../api/upcoming/upcomingActions";
 
 export default function History() {
+  const { fetchDestinationData, handleDelete, handleUpdateStatus } =
+    upcomingActions();
+
   const [destinations, setDestinations] = useState([]);
 
-  const fetchDestinationData = () => {
-    fetch(
-      `http://localhost:5001/api/v1/destinations?status=${encodeURIComponent(
-        "visited"
-      )}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setDestinations(data);
-      });
-  };
-
   useEffect(() => {
-    fetchDestinationData();
+    let fn = async () => {
+      setDestinations(await fetchDestinationData("visited"));
+    };
+
+    fn().then(() => {});
   }, []);
 
   useEffect(() => {}, [destinations]);
-
-  const handleDelete = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-      method: "DELETE",
-    })
-      .then(() => {
-        fetchDestinationData();
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const handleSetNotVisited = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-
-      body: JSON.stringify({
-        status: "not visited",
-      }),
-    })
-      .then(() => {
-        fetchDestinationData();
-      })
-      .catch((error) => console.error(error));
-  };
 
   return (
     <>
@@ -82,9 +48,27 @@ export default function History() {
             item={data}
             firstAction={{
               text: "Mark as Not Visited",
-              onClick: handleSetNotVisited,
+              onClick: async () => {
+                let success = await handleUpdateStatus(
+                  data.destinationID,
+                  "not visited"
+                );
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("visited"));
+              },
             }}
-            secondAction={{ text: "Delete", onClick: handleDelete }}
+            secondAction={{
+              text: "Delete",
+              onClick: async () => {
+                let success = await handleDelete(data.destinationID);
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("visited"));
+              },
+            }}
           />
         ))}
       </div>

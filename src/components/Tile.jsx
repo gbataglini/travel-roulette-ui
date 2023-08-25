@@ -1,26 +1,28 @@
-import BlackButton from "./BlackButton";
-
 const Tile = (props) => {
   const { id, name, firstAction, secondAction } = props;
 
   return (
-    <div key={id} className="grid place-content-evenly">
+    <div className="grid place-content-evenly">
       <p className="text-xl p-3">{name} </p>
 
       <div className="flex flex-row">
-        <BlackButton
-          text={firstAction.text}
+        <button
+          className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base mb-10"
           onClick={(e) => {
             firstAction.onClick(id);
           }}
-        />
+        >
+          {firstAction.text}
+        </button>
 
-        <BlackButton
-          text={secondAction.text}
+        <button
+          className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base mb-10"
           onClick={(e) => {
             secondAction.onClick(id);
           }}
-        />
+        >
+          {secondAction.text}
+        </button>
       </div>
     </div>
   );

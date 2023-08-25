@@ -2,72 +2,27 @@ import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Tile from "../components/Tile";
 import WhiteButton from "../components/WhiteButton";
+import { upcomingActions } from "../api/upcoming/upcomingActions";
 
 export default function Upcoming() {
-  const [randomDestination, setRandomDestination] = useState(null);
+  const {
+    fetchDestinationData,
+    handleRandomDest,
+    handleDelete,
+    handleUpdateStatus,
+  } = upcomingActions();
+
   const [destinations, setDestinations] = useState([]);
 
-  const fetchDestinationData = () => {
-    fetch(
-      `http://localhost:5001/api/v1/destinations?status=${encodeURIComponent(
-        "not visited"
-      )}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setDestinations(data);
-      });
-  };
-
   useEffect(() => {
-    fetchDestinationData();
+    let fn = async () => {
+      setDestinations(await fetchDestinationData("not visited"));
+    };
+
+    fn().then(() => {});
   }, []);
 
   useEffect(() => {}, [destinations]);
-
-  const handleClick = async () => {
-    try {
-      const resDestination = await (
-        await fetch(`http://localhost:5001/api/v1/destinations/random`)
-      ).json();
-
-      setRandomDestination(resDestination);
-
-      alert(randomDestination.destinationName);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const handleDelete = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-      method: "DELETE",
-    })
-      .then(() => {
-        fetchDestinationData();
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const handleSetVisited = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-
-      body: JSON.stringify({
-        status: "visited",
-      }),
-    })
-      .then(() => {
-        fetchDestinationData();
-      })
-      .catch((error) => console.error(error));
-  };
 
   return (
     <>
@@ -87,7 +42,13 @@ export default function Upcoming() {
               </p>
             </div>
             <div className="py-2 flex justify-center">
-              <WhiteButton text="Pick for me" onClick={handleClick} />
+              <WhiteButton
+                text="Pick for me"
+                onClick={async (e) => {
+                  let response = await handleRandomDest();
+                  alert(response.destinationName);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -106,9 +67,27 @@ export default function Upcoming() {
             item={data}
             firstAction={{
               text: "Mark as Visited",
-              onClick: handleSetVisited,
+              onClick: async () => {
+                let success = await handleUpdateStatus(
+                  data.destinationID,
+                  "visited"
+                );
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("not visited"));
+              },
             }}
-            secondAction={{ text: "Delete", onClick: handleDelete }}
+            secondAction={{
+              text: "Delete",
+              onClick: async () => {
+                let success = await handleDelete(data.destinationID);
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("not visited"));
+              },
+            }}
           />
         ))}
       </div>
