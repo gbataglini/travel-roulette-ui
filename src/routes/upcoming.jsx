@@ -1,45 +1,28 @@
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
+import Tile from "../components/Tile";
+import WhiteButton from "../components/WhiteButton";
+import { destinationActions } from "../api/destinationActions";
 
 export default function Upcoming() {
-  const [randomDestination, setRandomDestination] = useState(null);
+  const {
+    fetchDestinationData,
+    handleRandomDest,
+    handleDelete,
+    handleUpdateStatus,
+  } = destinationActions();
+
   const [destinations, setDestinations] = useState([]);
 
-  const fetchDestinationData = () => {
-    fetch(`http://localhost:5001/api/v1/destinations`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setDestinations(data);
-      });
-  };
-
-const handleDelete = (id) => {
-    fetch(`http://localhost:5001/api/v1/destinations/${id}`, {
-    method: 'DELETE'
-    })
-    .catch(error => console.error(error));
-  }
-
-
   useEffect(() => {
-    fetchDestinationData();
+    let fn = async () => {
+      setDestinations(await fetchDestinationData("not visited"));
+    };
+
+    fn().then(() => {});
   }, []);
 
-  const handleClick = async () => {
-    try {
-      const resDestination = await (
-        await fetch(`http://localhost:5001/api/v1/destinations/random`)
-      ).json();
-
-      setRandomDestination(resDestination);
-
-      alert(randomDestination.destinationName);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  useEffect(() => {}, [destinations]);
 
   return (
     <>
@@ -59,12 +42,13 @@ const handleDelete = (id) => {
               </p>
             </div>
             <div className="py-2 flex justify-center">
-              <button
-                className="bg-white hover:bg-gray-700 hover:text-white rounded-lg p-4 ml-3"
-                onClick={handleClick}
-              >
-                Pick for me
-              </button>
+              <WhiteButton
+                text="Pick for me"
+                onClick={async (e) => {
+                  let response = await handleRandomDest();
+                  alert(response.destinationName);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -74,24 +58,37 @@ const handleDelete = (id) => {
         <p className="text-3xl font-bold text-black py-1">All Destinations</p>
       </div>
 
-      <div className="grid grid-cols-3 p-10 m-2">
-        {destinations.map((data, id) => {
-          return (
-            <div key={id}>
-              <p className="text-xl p-3">{data.destinationName}</p>
-              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base">
-                Mark as Visited
-              </button>
-              <button className="bg-black text-white hover:bg-gray-700 hover:text-white rounded-lg p-2 ml-2 text-base mb-10"
-              onClick={() => {
-                handleDelete(data.destinationID)
-              }}
-              >
-                Delete
-              </button>
-            </div>
-          );
-        })}
+      <div className="grid grid-cols-3 gap-4">
+        {destinations.map((data) => (
+          <Tile
+            key={data.destinationID}
+            id={data.destinationID}
+            name={data.destinationName}
+            firstAction={{
+              text: "Mark as Visited",
+              onClick: async () => {
+                let success = await handleUpdateStatus(
+                  data.destinationID,
+                  "visited"
+                );
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("not visited"));
+              },
+            }}
+            secondAction={{
+              text: "Delete",
+              onClick: async () => {
+                let success = await handleDelete(data.destinationID);
+                if (!success) {
+                  return;
+                }
+                setDestinations(await fetchDestinationData("not visited"));
+              },
+            }}
+          />
+        ))}
       </div>
     </>
   );

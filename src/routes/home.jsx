@@ -1,31 +1,21 @@
 import NavBar from "../components/NavBar";
 import { useState } from "react";
+import { destinationActions } from "../api/destinationActions";
 
 export default function Home() {
+  const { createDestination } = destinationActions();
+
   const [destination, setDestination] = useState("");
 
   let handleSubmit = async (e) => {
+    //prevents form submit from refreshing page
     e.preventDefault();
-    try {
-      let res = await fetch("http://localhost:5001/api/v1/destinations", {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          destinationName: destination,
-        }),
-      });
-
-      if (res.status === 200) {
-        setDestination("");
-        console.log("Destination added successfully");
-      } else {
-        alert("Error! Could not add destination. ");
-      }
-    } catch (err) {
-      console.log(err);
+    let success = await createDestination(destination);
+    if (success) {
+      setDestination("");
+      alert("Destination added successfully!");
+    } else {
+      alert("Error! Could not add destination.");
     }
   };
 

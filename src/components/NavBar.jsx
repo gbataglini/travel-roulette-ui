@@ -1,6 +1,7 @@
 import { SlCompass } from "react-icons/sl";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import "../App.css";
 
 const NavBar = () => {
   return (
@@ -15,17 +16,17 @@ const NavBar = () => {
           <div className="inline-block min-h-[1em] w-0.5 self-stretch bg-white opacity-100 dark:opacity-50 ml-4"></div>
 
           <ul className="md:flex md:items-center">
-            <li className="md:ml-6 text-l">
+            <li className="md:ml-6 text-l animated-link">
               <Link to={`/home`} className="hover:text-black duration-300">
                 HOME
               </Link>
             </li>
-            <li className="md:ml-6 text-l">
+            <li className="md:ml-6 text-l animated-link">
               <Link to={`/upcoming`} className="hover:text-black duration-300">
                 UPCOMING
               </Link>
             </li>
-            <li className="md:ml-6 text-l">
+            <li className="md:ml-6 text-l animated-link">
               <Link to={`/history`} className="hover:text-black duration-300">
                 HISTORY
               </Link>
