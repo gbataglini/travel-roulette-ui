@@ -1,9 +1,9 @@
 import NavBar from "../components/NavBar";
 import { useState } from "react";
-import { upcomingActions } from "../api/upcoming/upcomingActions";
+import { destinationActions } from "../api/destinationActions";
 
 export default function Home() {
-  const { createDestination } = upcomingActions();
+  const { createDestination } = destinationActions();
 
   const [destination, setDestination] = useState("");
 
@@ -11,7 +11,6 @@ export default function Home() {
     //prevents form submit from refreshing page
     e.preventDefault();
     let success = await createDestination(destination);
-    console.log(success);
     if (success) {
       setDestination("");
       alert("Destination added successfully!");

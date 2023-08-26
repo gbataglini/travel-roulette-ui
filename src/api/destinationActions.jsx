@@ -1,4 +1,4 @@
-export function upcomingActions() {
+export function destinationActions() {
   return {
     async createDestination(destinationName) {
       try {

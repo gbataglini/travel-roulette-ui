@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Tile from "../components/Tile";
 import WhiteButton from "../components/WhiteButton";
-import { upcomingActions } from "../api/upcoming/upcomingActions";
+import { destinationActions } from "../api/destinationActions";
 
 export default function Upcoming() {
   const {
@@ -10,7 +10,7 @@ export default function Upcoming() {
     handleRandomDest,
     handleDelete,
     handleUpdateStatus,
-  } = upcomingActions();
+  } = destinationActions();
 
   const [destinations, setDestinations] = useState([]);
 
@@ -64,7 +64,6 @@ export default function Upcoming() {
             key={data.destinationID}
             id={data.destinationID}
             name={data.destinationName}
-            item={data}
             firstAction={{
               text: "Mark as Visited",
               onClick: async () => {

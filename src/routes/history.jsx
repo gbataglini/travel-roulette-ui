@@ -1,11 +1,11 @@
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Tile from "../components/Tile";
-import { upcomingActions } from "../api/upcoming/upcomingActions";
+import { destinationActions } from "../api/destinationActions";
 
 export default function History() {
   const { fetchDestinationData, handleDelete, handleUpdateStatus } =
-    upcomingActions();
+    destinationActions();
 
   const [destinations, setDestinations] = useState([]);
 
